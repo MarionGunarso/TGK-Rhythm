@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class ScrollingBakground : MonoBehaviour
 {
+
+	public float bpm;
 	/// <summary>
 	/// Scrolling speed
 	/// </summary>
@@ -37,10 +39,14 @@ public class ScrollingBakground : MonoBehaviour
 	private List<Transform> backgroundPart;
 
 	//private PlayerScript playerScript;
-	
+
+	GameOverScript gameOverScript;
+
 	// 3 - Get all the children
 	void Start()
 	{
+		speed = new Vector2(speed.x , 0.0309f*bpm);
+		gameOverScript = GameObject.FindGameObjectWithTag("gameOver").GetComponent<GameOverScript>();
 		//playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
 		// For infinite background only
 		if (isLooping)
@@ -72,21 +78,7 @@ public class ScrollingBakground : MonoBehaviour
 	
 	void Update()
 	{
-		// Movement
-		Vector3 movement = new Vector3(
-			speed.x * direction.x,
-			speed.y * direction.y,
-			0);
-		
-		movement *= Time.deltaTime;
-		transform.Translate(movement);
-		
-		// Move the camera
-		if (isLinkedToCamera)
-		{
-			Camera.main.transform.Translate(movement);
-		}
-		
+
 		// 4 - Loop
 		if (isLooping)
 		{
@@ -106,6 +98,22 @@ public class ScrollingBakground : MonoBehaviour
 					// recycled.
 					if (firstChild.renderer.IsVisibleFrom(Camera.main) == false)
 					{
+						TileScript[] tiles = firstChild.GetComponentsInChildren<TileScript>();
+						//check all tile in row, if there's still any untapped tiles, gameOver
+						foreach(TileScript tile in tiles)
+						{
+							if(tile.rightTap==true)
+							{
+								if(tile.tambahScore==true)
+								{
+									gameOverScript.gameOver=true;
+									break;
+								}
+							}
+
+						}
+
+
 						// Get the last child position.
 						Transform lastChild = backgroundPart.LastOrDefault();
 						Vector3 lastPosition = lastChild.transform.position;
@@ -117,7 +125,7 @@ public class ScrollingBakground : MonoBehaviour
 						firstChild.GetComponent<RandomizeTileScript>().RemoveList();
 						firstChild.GetComponent<RandomizeTileScript>().CheckTiles();
 						firstChild.GetComponent<RandomizeTileScript>().SwapTiles();
-						TileScript[] tiles = firstChild.GetComponentsInChildren<TileScript>();
+
 						foreach(TileScript tile in tiles)
 						{
 							tile.Reset();
@@ -131,6 +139,25 @@ public class ScrollingBakground : MonoBehaviour
 					}
 				}
 			}
+		}
+	}
+
+	void FixedUpdate()
+	{
+		
+		// Movement
+		Vector3 movement = new Vector3(
+			speed.x * direction.x,
+			speed.y * direction.y,
+			0);
+		
+		movement *= Time.deltaTime;
+		transform.Translate(movement);
+		
+		// Move the camera
+		if (isLinkedToCamera)
+		{
+			Camera.main.transform.Translate(movement);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class GameOverScript : MonoBehaviour {
 
 	// Use this for initialization
@@ -8,7 +9,10 @@ public class GameOverScript : MonoBehaviour {
 	public TextMesh textGameOver;
 	public MeshRenderer meshRendererOver;
 
+	//BPMDetection a = new BPMDetection();
+
 	void Start () {
+
 		gameOver = false;
 		meshRendererOver.enabled = false;
 	}
@@ -16,6 +20,7 @@ public class GameOverScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
 		if(gameOver == true)
 		{
 			meshRendererOver.enabled = true;

@@ -11,9 +11,12 @@ public class RandomizeTileScript : MonoBehaviour {
 	List<int> indexRightTap = new List<int>();
 	int [] indexRightTapArray;
 
+	GameOverScript gameOverScript;
 	IEnumerator WaitToAdd()
 	{
 		yield return new WaitForSeconds(0.005f);
+
+		//add list of tiles in the row
 		foreach(Transform child in this.transform)
 		{
 			childrenTilesList.Add(child);
@@ -23,11 +26,13 @@ public class RandomizeTileScript : MonoBehaviour {
 
 	void Start () {
 		StartCoroutine(WaitToAdd());
+		gameOverScript = GameObject.FindGameObjectWithTag("gameOver").GetComponent<GameOverScript>();
 	
 	}
 
 	public void CheckTiles()
 	{
+		//find the index of the right tiles
 		for(int i=0 ; i<childrenTiles.Length ; i++)
 		{
 			
@@ -40,6 +45,8 @@ public class RandomizeTileScript : MonoBehaviour {
 		}
 		indexRightTapArray = indexRightTap.ToArray();
 	}
+
+	//clear the list of index
 	public void RemoveList()
 	{
 		indexRightTap.Clear();
@@ -47,9 +54,12 @@ public class RandomizeTileScript : MonoBehaviour {
 
 	public void SwapTiles()
 	{
+		//looping for each right Tiles, randomize location
 		for(int i=0 ; i<indexRightTapArray.Length; i++)
 		{
-			int b = Random.Range(0,childrenTiles.Length);
+			//randomize index location
+			int b = Random.Range(0,childrenTiles.Length); 
+			//if it's different from index of right tiles, then swap position
 			if(b!=indexRightTapArray[i])
 			{
 				float xTemp = childrenTiles[b].transform.position.x;
